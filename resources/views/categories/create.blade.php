@@ -1,0 +1,60 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="row">
+    <div class="col-lg-12 margin-tb">
+        <div class="pull-left">
+            <h2>Create New Category</h2>
+        </div>
+        <div class="pull-right">
+            <a class="btn btn-primary" href="{{ route('categories.index') }}"> Back</a>
+        </div>
+    </div>
+</div>
+
+@if (count($errors) > 0)
+  <div class="alert alert-danger">
+    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+    <ul>
+       @foreach ($errors->all() as $error)
+         <li>{{ $error }}</li>
+       @endforeach
+    </ul>
+  </div>
+@endif
+
+{!! Form::open(array('route' => 'categories.store','method'=>'POST')) !!}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 mb-3">
+        <div class="form-group">
+            <strong>Name:</strong>
+            {!! Form::text('name', old('name'), array('placeholder' => 'Name','class' => 'form-control')) !!}
+        </div>
+    </div>
+    
+    <div class="col-xs-12 col-sm-12 col-md-12 mb-3">
+        <div class="form-group">
+            <strong>Parent Category:</strong>
+            <select type="text" name="parent_category_id" class="form-control">
+                <option value="">Select Parent</option>
+                @if($categories)
+                    @foreach($categories as $category)
+                        <?php $dash=''; ?>
+                        <option value="{{$category->id}}">{{$category->name}}</option>
+                        @if(count($category->children))
+                            @include('categories.subCategoryList-option',['subcategories' => $category->children])
+                        @endif
+                    @endforeach
+                @endif
+            </select>
+
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12 mb-3 text-left">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</div>
+
+{!! Form::close() !!}
+
+@endsection
